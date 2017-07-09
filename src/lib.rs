@@ -2,7 +2,7 @@ use std::ops::{AddAssign, SubAssign, MulAssign, DivAssign};
 use std::ops::{Add, Sub, Mul, Div, Neg};
 use std::f64;
 
-#[derive (Debug)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Dual<T> {
     real: f64,
     dual: T,
@@ -47,9 +47,9 @@ where
     }
 }
 
-impl<T> Add for Dual<T> 
+impl<T> Add for Dual<T>
 where
-    T: AddAssign
+    T: AddAssign,
 {
     type Output = Self;
 
@@ -69,9 +69,9 @@ where
     }
 }
 
-impl<T> Sub for Dual<T> 
+impl<T> Sub for Dual<T>
 where
-    T: SubAssign
+    T: SubAssign,
 {
     type Output = Self;
 
@@ -81,9 +81,9 @@ where
     }
 }
 
-impl<T> SubAssign for Dual<T> 
+impl<T> SubAssign for Dual<T>
 where
-    T: SubAssign
+    T: SubAssign,
 {
     fn sub_assign(&mut self, other: Self) {
         self.real -= other.real;
@@ -91,9 +91,9 @@ where
     }
 }
 
-impl<T> Mul for Dual<T> 
+impl<T> Mul for Dual<T>
 where
-    T: Mul<f64, Output=T> + Add<T, Output=T> + Copy
+    T: Mul<f64, Output = T> + Add<T, Output = T> + Copy,
 {
     type Output = Self;
 
@@ -105,17 +105,17 @@ where
 
 impl<T> MulAssign for Dual<T>
 where
-    T: Mul<f64, Output=T> + Add<T, Output=T> + Copy
+    T: Mul<f64, Output = T> + Add<T, Output = T> + Copy,
 {
     fn mul_assign(&mut self, other: Self) {
-        self.real *= other.real;
         self.dual = other.dual * self.real + self.dual * other.real;
+        self.real *= other.real;
     }
 }
 
-impl<T> Div for Dual<T> 
+impl<T> Div for Dual<T>
 where
-    T: Mul<f64, Output=T> + Div<f64, Output=T> + Sub<T, Output=T> + Copy
+    T: Mul<f64, Output = T> + Div<f64, Output = T> + Sub<T, Output = T> + Copy,
 {
     type Output = Self;
 
@@ -130,7 +130,20 @@ where
     T: Mul<f64, Output=T> + Div<f64, Output=T> + Sub<T, Output=T> + Copy
 {
     fn div_assign(&mut self, other: Self) {
-        self.real /= other.real;
         self.dual = other.dual / self.real - self.dual * other.real / self.real.powi(2);
+        self.real /= other.real;
+    }
+}
+
+#[cfg(test)]
+mod dual_test {
+    use super::*;
+
+
+    #[test]
+    fn mul() {
+        let a = Dual::new(1f64, 4f64);
+        let b = Dual::new(5f64, 2f64);
+        assert_eq!(a * b, Dual::new(5f64, 22f64));
     }
 }

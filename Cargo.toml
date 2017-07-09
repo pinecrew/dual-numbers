@@ -1,6 +1,9 @@
 [package]
-name = "dual-numbers"
+name = "dual"
 version = "0.1.0"
-authors = ["Alexey Golubev <dr.freecx@gmail.com>"]
+authors = ["Alexey Golubev <dr.freecx@gmail.com>", "Vova Abdrakhmanov <369565@gmail.com>"]
+
+[lib]
+name = "dual"
 
 [dependencies]
