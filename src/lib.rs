@@ -289,12 +289,204 @@ where
 #[cfg(test)]
 mod dual_test {
     use super::*;
+    use std::f64::consts::*;
 
+    // change this
+    const EPS: f64 = 1E-15;
+
+    #[test]
+    fn add() {
+        let a = Dual::new(1_f64, 2_f64);
+        let b = Dual::new(3_f64, 4_f64);
+        let c = Dual::new(4_f64, 6_f64);
+        assert_eq!(a + b, c);
+    }
+
+    #[test]
+    fn sub() {
+        let a = Dual::new(1_f64, 2_f64);
+        let b = Dual::new(3_f64, 4_f64);
+        let c = Dual::new(-2_f64, -2_f64);
+        assert_eq!(a - b, c);
+    }
 
     #[test]
     fn mul() {
-        let a = Dual::new(1f64, 4f64);
-        let b = Dual::new(5f64, 2f64);
-        assert_eq!(a * b, Dual::new(5f64, 22f64));
+        let a = Dual::new(1_f64, 4_f64);
+        let b = Dual::new(5_f64, 2_f64);
+        let c = Dual::new(5_f64, 22_f64);
+        assert_eq!(a * b, c);
     }
+
+    #[test]
+    fn div() {
+        let a = Dual::new(4_f64, 3_f64);
+        let b = Dual::new(1_f64, 2_f64);
+        let c = Dual::new(4_f64, 0.3125_f64);
+        assert_eq!(a / b, c);
+    }
+
+    #[test]
+    fn neg() {
+        let a = Dual::new(-1_f64,  1_f64);
+        let b = Dual::new( 1_f64, -1_f64);
+        assert_eq!(-a, b);
+    }
+
+    #[test]
+    fn sin() {
+        let a = Dual::new(FRAC_PI_2, 2_f64);
+        let b = Dual::new(1_f64, 0_f64);
+        let c = a.sin() - b;
+        assert_eq!(c.real == 0_f64 && c.dual.abs() < EPS, true);
+    }
+
+    #[test]
+    fn cos() {
+        let a = Dual::new(2_f64 * PI, 2_f64);
+        let b = Dual::new(1_f64, 0_f64);
+        let c = a.cos() - b;
+        assert_eq!(c.real == 0_f64 && c.dual.abs() < EPS, true);
+    }
+
+    #[test]
+    fn tan() {
+        let a = Dual::new(FRAC_PI_4, 0.5_f64);
+        let b = Dual::new(1_f64, 1_f64);
+        let c = a.tan() - b;
+        assert_eq!(c.real.abs() < EPS && c.dual.abs() < EPS, true);
+    }
+
+    // #[test]
+    // fn asin() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn acos() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn atan() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn sinh() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn cosh() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn tanh() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn asinh() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn acosh() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn atanh() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    #[test]
+    fn exp() {
+        let a = Dual::new(0_f64, 2_f64);
+        let b = Dual::new(1_f64, 2_f64);
+        assert_eq!(a.exp(), b);
+    }
+
+    #[test]
+    fn exp2() {
+        let a = Dual::new(0_f64, 2_f64);
+        let b = Dual::new(1_f64, 2_f64 * 2_f64.ln());
+        assert_eq!(a.exp2(), b);
+    }
+
+    // #[test]
+    // fn ln() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn log() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn log2() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn log10() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn abs() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn powi() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn powf() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
+
+    // #[test]
+    // fn sqrt() {
+    //     let a = Dual::new(0_f64, 0_f64);
+    //     let b = Dual::new(0_f64, 0_f64);
+    //     assert_eq!(true, true);
+    // }
 }
