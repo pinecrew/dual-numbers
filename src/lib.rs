@@ -254,6 +254,19 @@ where
     }
 }
 
+impl<T, U> Mul<U> for Dual<T>
+where
+    T: MulAssign<f64>,
+    U: Into<f64>,
+{
+    type Output = Self;
+
+    fn mul(mut self, rhs: U) -> Self::Output {
+        self *= rhs;
+        self
+    }
+}
+
 impl<T> MulAssign for Dual<T>
 where
     T: Mul<f64, Output = T> + Add<T, Output = T> + Copy,
@@ -261,6 +274,18 @@ where
     fn mul_assign(&mut self, other: Self) {
         self.dual = other.dual * self.real + self.dual * other.real;
         self.real *= other.real;
+    }
+}
+
+impl<T, U> MulAssign<U> for Dual<T>
+where
+    T: MulAssign<f64>,
+    U: Into<f64>,
+{
+    fn mul_assign(&mut self, other: U) {
+        let tmp: f64 = other.into();
+        self.real *= tmp;
+        self.dual *= tmp;
     }
 }
 
@@ -276,6 +301,19 @@ where
     }
 }
 
+impl<T, U> Div<U> for Dual<T>
+where
+    T: DivAssign<f64>,
+    U: Into<f64>,
+{
+    type Output = Self;
+
+    fn div(mut self, rhs: U) -> Self::Output {
+        self /= rhs;
+        self
+    }
+}
+
 impl<T> DivAssign for Dual<T>
 where
     T: Mul<f64, Output=T> + Div<f64, Output=T> + Sub<T, Output=T> + Copy
@@ -283,6 +321,18 @@ where
     fn div_assign(&mut self, other: Self) {
         self.dual = other.dual / self.real - self.dual * other.real / self.real.powi(2);
         self.real /= other.real;
+    }
+}
+
+impl<T, U> DivAssign<U> for Dual<T>
+where
+    T: DivAssign<f64>,
+    U: Into<f64>,
+{
+    fn div_assign(&mut self, other: U) {
+        let tmp: f64 = other.into();
+        self.real /= tmp;
+        self.dual /= tmp;
     }
 }
 
@@ -328,8 +378,8 @@ mod dual_test {
 
     #[test]
     fn neg() {
-        let a = Dual::new(-1_f64,  1_f64);
-        let b = Dual::new( 1_f64, -1_f64);
+        let a = Dual::new(-1_f64, 1_f64);
+        let b = Dual::new(1_f64, -1_f64);
         assert_eq!(-a, b);
     }
 
