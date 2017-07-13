@@ -484,40 +484,41 @@ mod dual_test {
         assert_eq!(a.exp2(), b);
     }
 
-    // #[test]
-    // fn ln() {
-    //     let a = Dual::new(0_f64, 0_f64);
-    //     let b = Dual::new(0_f64, 0_f64);
-    //     assert_eq!(true, true);
-    // }
+    #[test]
+    fn ln() {
+        let a = Dual::new(1_f64, 1_f64);
+        let b = Dual::new(0_f64, 1_f64);
+        assert_eq!(a.ln(), b);
+    }
 
-    // #[test]
-    // fn log() {
-    //     let a = Dual::new(0_f64, 0_f64);
-    //     let b = Dual::new(0_f64, 0_f64);
-    //     assert_eq!(true, true);
-    // }
+    #[test]
+    fn log() {
+        let a = Dual::new(5_f64, 10_f64);
+        let b = Dual::new(1_f64, 2_f64 / 5_f64.ln());
+        assert_eq!(a.log(5_f64), b);
+    }
 
-    // #[test]
-    // fn log2() {
-    //     let a = Dual::new(0_f64, 0_f64);
-    //     let b = Dual::new(0_f64, 0_f64);
-    //     assert_eq!(true, true);
-    // }
+    #[test]
+    fn log2() {
+        let a = Dual::new(1024_f64, 2048_f64);
+        let b = Dual::new(10_f64, 2_f64 / 2_f64.ln());
+        assert_eq!(a.log2(), b);
+    }
 
-    // #[test]
-    // fn log10() {
-    //     let a = Dual::new(0_f64, 0_f64);
-    //     let b = Dual::new(0_f64, 0_f64);
-    //     assert_eq!(true, true);
-    // }
+    #[test]
+    fn log10() {
+        let a = Dual::new(100_f64, 500_f64);
+        let b = Dual::new(2_f64, 5_f64 / 10_f64.ln());
+        assert_eq!(a.log10(), b);
+    }
 
-    // #[test]
-    // fn abs() {
-    //     let a = Dual::new(0_f64, 0_f64);
-    //     let b = Dual::new(0_f64, 0_f64);
-    //     assert_eq!(true, true);
-    // }
+    #[test]
+    fn abs() {
+        for i in -10..10 {
+            let a = Dual::new(i, i * i);
+            assert_eq!(a.abs(), i as f64);
+        }
+    }
 
     // #[test]
     // fn powi() {
