@@ -520,24 +520,37 @@ mod dual_test {
         }
     }
 
-    // #[test]
-    // fn powi() {
-    //     let a = Dual::new(0_f64, 0_f64);
-    //     let b = Dual::new(0_f64, 0_f64);
-    //     assert_eq!(true, true);
-    // }
+    #[test]
+    fn powi() {
+        for k in 1..10 {
+            for (p1, p2) in (0..3).zip(1..4) {
+                let (p1, p2) = (p1 as f64, p2 as f64);
+                let a = Dual::new(p1, p2);
+                let v1 = p1.powi(k);
+                let v2 = p2 * (p1.powi(k - 1) * (k as f64));
+                let b = Dual::new(v1, v2);
+                assert_eq!(a.powi(k), b);
+            }
+        }
+    }
 
-    // #[test]
-    // fn powf() {
-    //     let a = Dual::new(0_f64, 0_f64);
-    //     let b = Dual::new(0_f64, 0_f64);
-    //     assert_eq!(true, true);
-    // }
+    #[test]
+    fn powf() {
+        for (p1, p2) in (0..3).zip(1..4) {
+            let (p1, p2) = (p1 as f64, p2 as f64);
+            let (v1, v2) = (p1.sqrt(), p2 * (p1.powf(-0.5) * 0.5));
+            let a = Dual::new(p1, p2);
+            let b = Dual::new(v1, v2);
+            assert_eq!(a.powf(0.5), b);
+        }
+    }
 
-    // #[test]
-    // fn sqrt() {
-    //     let a = Dual::new(0_f64, 0_f64);
-    //     let b = Dual::new(0_f64, 0_f64);
-    //     assert_eq!(true, true);
-    // }
+    #[test]
+    fn sqrt() {
+        for (p1, p2) in (0..10).zip(2..12) {
+            let a = Dual::new(p1 as f64, p2 as f64);
+            let b = a.powf(0.5);
+            assert_eq!((a.sqrt() - b).abs() < EPS, true);
+        }
+    }
 }
